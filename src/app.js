@@ -46,6 +46,24 @@ app.get("/feed", async (req,res) => {
     res.send("User not found")
   }
 })
+app.delete("/user", async(req,res) => {
+  const userId = req.body.userId;
+  await User.findByIdAndDelete(userId);
+  res.send("Deleted")
+})
+//Update Data of the User.
+app.patch("/user",async(req,res) => {
+  const userId = req.body.userId;
+  const data  = req.body;
+  try{
+    const user = await User.findByIdAndUpdate(userId,data);
+    res.send("Updated")
+  }
+  catch(err){
+    res.send("Error 404")
+  }
+
+})
 
 
 connectDB().then(() => {
