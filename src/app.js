@@ -15,7 +15,37 @@ app.post("/signup",async (req,res) => {
   }
   
 })
-
+app.get("/user", async (req,res) => {
+  try{
+    const user = await User.find(req.body);//*To Find One Document
+    if(!user.length ){
+      res.status(404).send("invalid User")
+    }
+    else{
+      res.send(user);
+    }
+    
+  }
+  catch(err) {
+    res.send("User not found")
+  }
+})
+app.get("/feed", async (req,res) => {
+  try{
+    //*To find all Document
+    const user = await User.find({});
+    if(!user.length ){
+      res.status(404).send("invalid User")
+    }
+    else{
+      res.send(user);
+    }
+    
+  }
+  catch(err) {
+    res.send("User not found")
+  }
+})
 
 
 connectDB().then(() => {
