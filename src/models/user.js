@@ -1,22 +1,49 @@
 const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     firstName : {
-        type:String
+        type:String,
+        required:true,
+        minLength:2,
+        maxLength:50,
     },
     lastName : {
         type:String
     },
     emailId : {
-        type:String
+        type:String,
+        required:true,
+        unique:true,
+        lowercase : true,
+        trim : true,
     },
     password : {
-        type:String
+        type:String,
+        required:true,
     },
     age : {
-        type:Number
+        type:Number,
+        min:18,
     },
     gender : {
-        type:String
+        type:String,
+        validate(value){
+            if(!["male","female","others"].includes(value)){
+                throw new Error("Gender not valid")
+            }
+        }//by default validator are off for updating DB.
+    },
+    photoUrl : {
+        type:String,
+        default:"https://hancockogundiyapartners.com/wp-content/uploads/2019/07/dummy-profile-pic-300x300.jpg",
+    },
+    about : {
+        type : String,
+        default : "This is a default about."
+    },
+    skills : {
+        type : [String],
     }
+},{
+    timestamps:true,
 });
 module.exports = mongoose.model("User",userSchema);
