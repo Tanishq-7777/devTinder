@@ -28,6 +28,24 @@ app.post("/signup", async (req, res) => {
     res.status(400).send(err.message);
   }
 });
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid Credentials");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (isPasswordValid) {
+      res.send("LoggedIn Successfully...");
+    } else {
+      throw new Error("Invalid Credentialsv");
+    }
+  } catch (err) {
+    res.send(err.message);
+  }
+});
 app.get("/user", async (req, res) => {
   try {
     const user = await User.find(req.body); //*To Find One Document
