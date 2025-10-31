@@ -3,9 +3,12 @@ const { connectDB } = require("./config/database");
 const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const app = express();
 app.use(express.json()); //to convert the json data to js object for all api.
 //post API
+app.use(cookieParser()); //parsing cookies
 app.post("/signup", async (req, res) => {
   //Encrypt Your Password
   const { firstName, lastName, emailId, password } = req.body;
@@ -38,6 +41,10 @@ app.post("/login", async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (isPasswordValid) {
+      //Add the token and Cookie
+      const token = jwt.sign({ _id: user._id }, "DEV@TINDER$2025");
+      res.cookie("token", token);
+
       res.send("LoggedIn Successfully...");
     } else {
       throw new Error("Invalid Credentialsv");
@@ -46,6 +53,28 @@ app.post("/login", async (req, res) => {
     res.send(err.message);
   }
 });
+
+//Profile API
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Token is not valid");
+    }
+    const decodedMessage = jwt.verify(token, "DEV@TINDER$2025");
+    const { _id } = decodedMessage;
+
+    const user = await User.findById({ _id });
+    if (!user) {
+      throw new Error("User is not present");
+    }
+    res.send(user);
+  } catch (err) {
+    res.send(err.message);
+  }
+});
+
 app.get("/user", async (req, res) => {
   try {
     const user = await User.find(req.body); //*To Find One Document
@@ -96,7 +125,6 @@ app.patch("/user/:userId", async (req, res) => {
       returnDocument: "after",
       runValidators: true,
     });
-    console.log(user);
     res.send("Updated");
   } catch (err) {
     res.send("Error 404");
