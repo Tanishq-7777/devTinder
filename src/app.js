@@ -6,6 +6,7 @@ const requestRouter = require("./routes/request");
 
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userRouter } = require("./routes/user");
 const app = express();
 app.use(express.json()); //to convert the json data to js object for all api.
 //post API
@@ -13,7 +14,8 @@ app.use(cookieParser()); //parsing cookies
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
-app.use("/", requestRouter); 
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
 connectDB()
   .then(() => {
