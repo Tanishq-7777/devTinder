@@ -12,23 +12,25 @@ const app = express();
 // ✅ Middlewares (order matters)
 app.use(express.json());
 app.use(cookieParser());
-
-const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://devtinder-frontend.vercel.app", // your old domain
-  "https://dev-tinder-web-3p7l.vercel.app", // ✅ your new actual Vercel domain
-];
-
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman, server calls
-      if (allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like Postman, server-side)
+      if (!origin) return callback(null, true);
+
+      // Allow local development
+      if (origin === "http://localhost:5173") {
         return callback(null, true);
-      } else {
-        console.log("❌ Blocked by CORS:", origin);
-        return callback(new Error("Not allowed by CORS"));
       }
+
+      // ✅ Dynamically allow all your Vercel deployments
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      // ❌ Block everything else
+      console.log("❌ Blocked by CORS:", origin);
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
