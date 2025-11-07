@@ -37,7 +37,11 @@ authRouter.post("/login", async (req, res) => {
     if (isPasswordValid) {
       //Add the token and Cookie
       const token = await user.getJWT();
-      res.cookie("token", token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true, // ✅ required for HTTPS (Render uses HTTPS)
+        sameSite: "none", // ✅ allows cookies across domains (Vercel ↔ Render)
+      });
 
       res.send(user);
     } else {
