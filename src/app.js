@@ -14,15 +14,17 @@ app.use(express.json()); //to convert the json data to js object for all api.
 //post API
 const PORT = process.env.PORT || 9999;
 app.use(cookieParser()); //parsing cookies
+const cors = require("cors");
+
 const allowedOrigins = [
-  "http://localhost:5173", // for local development
-  "https://your-frontend-name.vercel.app", // your live Vercel frontend URL
+  "http://localhost:5173", // local dev
+  "https://your-frontend-name.vercel.app", // 🔥 replace with your real frontend URL
 ];
 
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true, // ✅ allows cookies
+    credentials: true,
   })
 );
 

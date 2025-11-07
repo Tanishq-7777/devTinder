@@ -39,8 +39,8 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true, // ✅ required for HTTPS (Render uses HTTPS)
-        sameSite: "none", // ✅ allows cookies across domains (Vercel ↔ Render)
+        secure: true, // ✅ Render uses HTTPS
+        sameSite: "none", // ✅ allow cross-domain cookies
       });
 
       res.send(user);
