@@ -40,8 +40,11 @@ profileRouter.post("/profile/password", userAuth, async (req, res) => {
       const newuser = await User.findByIdAndUpdate(user._id, {
         password: newPasswordHash,
       });
-      res.cookie("token", null, {
-        expires: new Date(Date.now()),
+      res.cookie("token", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        expires: new Date(0),
       });
       res.send("Password Updated");
     }
