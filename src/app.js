@@ -13,16 +13,16 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Fix CORS (must be ABOVE all routes)
 const allowedOrigins = [
-  "http://localhost:5173", // Local React dev
-  "https://devtinder-frontend.vercel.app", // 🚀 Your Vercel frontend URL
+  "http://localhost:5173", // local dev
+  "https://devtinder-frontend.vercel.app", // your old domain
+  "https://dev-tinder-web-3p7l.vercel.app", // ✅ your new actual Vercel domain
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // allow Postman & non-browser tools
+      if (!origin) return callback(null, true); // allow Postman, server calls
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       } else {
@@ -30,7 +30,7 @@ app.use(
         return callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // ✅ Allows cookies
+    credentials: true,
   })
 );
 
