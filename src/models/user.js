@@ -37,10 +37,13 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
       validate(value) {
-        if (!["male", "female", "others"].includes(value)) {
+        if (
+          value &&
+          !["male", "female", "others"].includes(value.toLowerCase())
+        ) {
           throw new Error("Gender not valid");
         }
-      }, //by default validator are off for updating DB.
+      },
     },
     photoUrl: {
       type: String,
@@ -59,6 +62,7 @@ const userSchema = new mongoose.Schema(
     skills: {
       type: [String],
       unique: true,
+      default: [],
     },
   },
   {

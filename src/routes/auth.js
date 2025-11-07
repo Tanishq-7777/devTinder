@@ -39,12 +39,12 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       res.cookie("token", token);
 
-      res.send("LoggedIn Successfully...");
+      res.send(user);
     } else {
       throw new Error("Invalid Credentials");
     }
   } catch (err) {
-    res.send(err.message);
+    res.status(400).send(err.message);
   }
 });
 authRouter.post("/logout", async (req, res) => {

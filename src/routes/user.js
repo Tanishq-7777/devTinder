@@ -21,6 +21,7 @@ userRouter.get("/user/requests/recieved", userAuth, async (req, res) => {
 userRouter.get("/user/connections", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
+
     const connectionRequest = await ConnectionRequest.find({
       $or: [
         { toUserId: loggedInUser._id, status: "accepted" },
@@ -47,21 +48,27 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
 userRouter.get("/user/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ toUserId: loggedInUser._id }, { fromUserId: loggedInUser._id }],
     }).select("fromUserId toUserId");
+
     const hiddenUserFromFeed = new Set();
     connectionRequests.forEach((req) => {
       hiddenUserFromFeed.add(req.fromUserId.toString());
       hiddenUserFromFeed.add(req.toUserId.toString());
     });
-    console.log(hiddenUserFromFeed);
     const users = await User.find({
       $and: [
         { _id: { $nin: Array.from(hiddenUserFromFeed) } },
-        { _id: { $nin: loggedInUser._id } },
+        { _id: { $ne: loggedInUser._id } },
       ],
-    });
+    })
+      .select("firstName lastName photoUrl age about")
+      .skip(skip)
+      .limit(limit);
     res.send(users);
   } catch (err) {
     res.status(400).json({ message: err.message });

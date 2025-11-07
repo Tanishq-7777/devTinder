@@ -9,10 +9,10 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     const user = req.user;
     res.send(user);
   } catch (err) {
-    res.send(err.message);
+    res.status(400).send(err.message);
   }
 });
-profileRouter.get("/profile/edit", userAuth, (req, res) => {
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
   try {
     if (!validateEditProfileData(req)) {
       throw new Error("Invalid Edit Request");
@@ -21,10 +21,10 @@ profileRouter.get("/profile/edit", userAuth, (req, res) => {
     Object.keys(req.body).forEach((field) => {
       user[field] = req.body[field];
     });
-    user.save();
-    res.send(`${user.firstName} Data Edited Successfully`);
+    await user.save();
+    res.json({ message: "Profile Updated Successfully", data: user });
   } catch (err) {
-    res.send("Error : ", err.message);
+    res.status(401).send("Error : " + err.message);
   }
 });
 

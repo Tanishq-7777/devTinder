@@ -4,7 +4,7 @@ const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("Token Not Valid!!!!");
+      res.status(401).send("Please Login!");
     }
     const decodedObj = jwt.verify(token, "DEV@TINDER$2025");
     const { _id } = decodedObj;
@@ -15,7 +15,7 @@ const userAuth = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    res.send(err.message);
+    res.status(400).send(err.message);
   }
 };
 module.exports = {
