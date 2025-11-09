@@ -36,7 +36,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       }
       return row.fromUserId;
     });
-    res.status(400).send({
+    res.status(200).send({
       message: "These are the user connection",
       data: data,
     });

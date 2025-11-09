@@ -36,14 +36,13 @@ app.use(
   })
 );
 
-// ✅ Routes (after CORS)
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-// ✅ DB + Server
-const PORT = process.env.PORT || 9999;
+// const PORT = process.env.PORT || 9999;
+const PORT = 9999;
 
 connectDB()
   .then(() => {

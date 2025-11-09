@@ -78,7 +78,7 @@ requestRouter.post(
       }
       connectionRequest.status = status;
       const data = await connectionRequest.save();
-      res.status(400).json({
+      res.status(200).json({
         message: `the connection request has been ${status}`,
       });
 

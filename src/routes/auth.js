@@ -15,7 +15,7 @@ authRouter.post("/signup", async (req, res) => {
     emailId,
     password: passwordHash,
   });
-  const userSkillSet = Array.from(new Set(user.skills)); //REMOVING DUPLICATE SKILLS
+  const userSkillSet = Array.from(new Set(user.skills));
   user.skills = userSkillSet;
   try {
     //Validation
@@ -39,8 +39,8 @@ authRouter.post("/login", async (req, res) => {
       const token = await user.getJWT();
       res.cookie("token", token, {
         httpOnly: true,
-        secure: true, // ✅ Render uses HTTPS
-        sameSite: "none", // ✅ allow cross-domain cookies
+        secure: true,
+        sameSite: "none",
       });
 
       res.send(user);
