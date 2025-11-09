@@ -41,8 +41,8 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-// const PORT = process.env.PORT || 9999;
-const PORT = 9999;
+const PORT = process.env.PORT || 9999;
+// const PORT = 9999;
 
 connectDB()
   .then(() => {
